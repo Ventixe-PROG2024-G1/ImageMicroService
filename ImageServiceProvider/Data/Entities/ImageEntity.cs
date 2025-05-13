@@ -12,7 +12,4 @@ public class ImageEntity
 
     [Required]
     public string ContentType { get; set; } = null!;
-
-    [Required]
-    public string OriginalFileName { get; set; } = null!;
 }
