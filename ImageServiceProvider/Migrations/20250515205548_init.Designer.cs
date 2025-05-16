@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ImageServiceProvider.Migrations
 {
     [DbContext(typeof(ImageDbContext))]
-    [Migration("20250513222843_Init")]
-    partial class Init
+    [Migration("20250515205548_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

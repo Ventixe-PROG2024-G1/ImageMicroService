@@ -6,15 +6,15 @@ public interface ICacheHandler<T>
 {
     T? GetFromCache(string cacheKey);
     void RemoveCache(string cacheKey);
-    T SetCache(string cacheKey, T data, int minutesToCache = 10);
-    Task<T?> GetOrCreateAsync(string cacheKey, Func<Task<T?>> factory, int minutesToCache = 10);
+    T SetCache(string cacheKey, T data, int minutesToCache = 30);
+    Task<T?> GetOrCreateAsync(string cacheKey, Func<Task<T?>> factory, int minutesToCache = 30);
 }
 
 public class CacheHandler<T>(IMemoryCache cache) : ICacheHandler<T>
 {
     private readonly IMemoryCache _cache = cache;
 
-    public async Task<T?> GetOrCreateAsync(string cacheKey, Func<Task<T?>> factory, int minutesToCache = 10)
+    public async Task<T?> GetOrCreateAsync(string cacheKey, Func<Task<T?>> factory, int minutesToCache = 30)
     {
         return await _cache.GetOrCreateAsync(cacheKey, async cacheEntry =>
         {
@@ -31,7 +31,7 @@ public class CacheHandler<T>(IMemoryCache cache) : ICacheHandler<T>
         return data;
     }
 
-    public T SetCache(string cacheKey, T data, int minutesToCache = 10)
+    public T SetCache(string cacheKey, T data, int minutesToCache = 30)
     {
         var cacheEntryOptions = new MemoryCacheEntryOptions
         {
@@ -44,4 +44,3 @@ public class CacheHandler<T>(IMemoryCache cache) : ICacheHandler<T>
     public void RemoveCache(string cacheKey)
         => _cache.Remove(cacheKey);
 }
-

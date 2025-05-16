@@ -2,12 +2,9 @@
   "IsEncrypted": false,
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
-
-  },
-  "ConnectionStrings": {
-    "ImageDatabaseConnectionString": "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\zob_9\\Documents\\GitHub\\Event-Booking-System\\ImageMicroService\\ImageServiceProvider\\Data\\local_ImageDatabase.mdf;Integrated Security=True",
-    "ImageBlobStorageConnectionString": "UseDevelopmentStorage=true",
-    "ImageBlobStorageContainer": "images"
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "ImageSqlConnection": "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\zob_9\\Documents\\GitHub\\Event-Booking-System\\ImageMicroService\\ImageServiceProvider\\Data\\local_ImageDB.mdf;Integrated Security=True;Connect Timeout=30",
+    "BlobStorage:ConnectionString": "UseDevelopmentStorage=true",
+    "BlobStorage:ContainerName": "images"
   }
 }
