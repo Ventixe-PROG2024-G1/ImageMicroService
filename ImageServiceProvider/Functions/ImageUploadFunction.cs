@@ -51,7 +51,7 @@ public class ImageUploadFunction(ILogger<ImageUploadFunction> logger, IAzureImag
         _logger.LogInformation($"Image uploaded successfully: {imageResponse.ImageId}");
 
         return new CreatedAtActionResult(
-            "GetImage",
+            nameof(ImageResponseFunction.GetImage),
             "ImageResponseFunction",
             new { imageId = imageResponse.ImageId },
             imageResponse);

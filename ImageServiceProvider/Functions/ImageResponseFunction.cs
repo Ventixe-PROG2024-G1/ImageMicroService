@@ -20,7 +20,7 @@ public class ImageResponseFunction(ILogger<ImageResponseFunction> logger, IAzure
         if (imageResponse == null)
         {
             _logger.LogWarning($"Image with ID: {imageId} not found");
-            return new BadRequestResult();
+            return new NotFoundResult();
         }
 
         _logger.LogInformation($"Image with ID: {imageId} found, returning response");
