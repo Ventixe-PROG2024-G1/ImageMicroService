@@ -65,46 +65,77 @@ namespace ImageServiceProvider.Tests
         public async Task UploadFileAsync_WithValidStream_SavesToDbAndCacheAndReturnsModel()
         {
             // Arrange
-            var imageId = Guid.Empty; // Kommer att sättas av tjänsten
             var originalName = "test.png";
+            var fileExtension = ".png"; // Path.GetExtension(originalName)
             var contentType = "image/png";
             var fileStream = new MemoryStream(new byte[] { 1, 2, 3 });
 
             ImageResponseModel? capturedCachedModel = null;
+            // Vi behöver inte 'imageId' här längre eftersom vi kommer att få det från 'result'
+            // och använda det för att bygga den förväntade URI:n.
+
             _mockCacheHandler.Setup(c => c.SetCache(It.IsAny<string>(), It.IsAny<ImageResponseModel>(), It.IsAny<int>()))
                 .Callback<string, ImageResponseModel, int>((key, model, mins) =>
                 {
-                    imageId = Guid.Parse(key); // Fånga ID från cache-nyckeln
-                    capturedCachedModel = model;
+                    capturedCachedModel = model; // Fånga modellen som cachas
                 })
                 .Returns((string key, ImageResponseModel model, int mins) => model);
+
+            // Fånga det blobName som AzureImageService kommer att använda.
+            // Detta blobName kommer att innehålla det Guid som genereras internt i AzureImageService.
+            string actualBlobNameUsedByService = string.Empty;
+
+            _mockBlobContainerClient
+                .Setup(c => c.GetBlobClient(It.IsAny<string>())) // När GetBlobClient anropas med vilket strängargument som helst...
+                .Callback<string>(generatedBlobName => actualBlobNameUsedByService = generatedBlobName) // ...fånga upp det argumentet...
+                .Returns(_mockBlobClient.Object); // ...och returnera vår globala _mockBlobClient.
+
+            // Ställ in Uri-egenskapen på den globala _mockBlobClient att dynamiskt använda
+            // det 'actualBlobNameUsedByService' som fångades upp ovan.
+            // Func<Uri> säkerställer att 'actualBlobNameUsedByService' evalueras när .Uri faktiskt accessas.
+            _mockBlobClient
+                .Setup(b => b.Uri)
+                .Returns(() => new Uri($"https://fakestorage.blob.core.windows.net/{TestContainerName}/{actualBlobNameUsedByService}"));
 
             // Act
             var result = await _imageService.UploadFileAsync(fileStream, originalName, contentType);
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotEqual(Guid.Empty, result.ImageId); // Kontrollera att ett nytt ID har genererats
+            Assert.NotEqual(Guid.Empty, result.ImageId); // Kontrollera att ett nytt ID har genererats av tjänsten
             Assert.Equal(contentType, result.ContentType);
-            Assert.Equal($"https://fakestorage.blob.core.windows.net/{TestContainerName}/mockblob.jpg", result.ImageUrl); // Kontrollera URL-format
+
+            // Konstruera den förväntade URI:n baserat på det ID och filändelse som tjänsten använde.
+            // Vi vet att 'actualBlobNameUsedByService' nu bör vara satt till $"{result.ImageId}{fileExtension}"
+            // eftersom det är så AzureImageService konstruerar blobName.
+            var expectedImageUrl = $"https://fakestorage.blob.core.windows.net/{TestContainerName}/{result.ImageId}{fileExtension}";
+            Assert.Equal(expectedImageUrl, result.ImageUrl);
 
             // Verifiera DB-interaktion
             var entityInDb = await _dbContext.Images.FindAsync(result.ImageId);
             Assert.NotNull(entityInDb);
             Assert.Equal(result.ImageId, entityInDb.ImageId);
-            Assert.Equal($"{result.ImageId}.png", entityInDb.ImageBlobName);
+            Assert.Equal($"{result.ImageId}{fileExtension}", entityInDb.ImageBlobName);
             Assert.Equal(contentType, entityInDb.ContentType);
 
             // Verifiera Cache-interaktion
-            _mockCacheHandler.Verify(c => c.SetCache(result.ImageId.ToString(), It.Is<ImageResponseModel>(m => m.ImageId == result.ImageId), It.IsAny<int>()), Times.Once);
+            _mockCacheHandler.Verify(c => c.SetCache(result.ImageId.ToString(), It.Is<ImageResponseModel>(m => m.ImageId == result.ImageId && m.ImageUrl == expectedImageUrl), It.IsAny<int>()), Times.Once);
             Assert.NotNull(capturedCachedModel);
             Assert.Equal(result.ImageId, capturedCachedModel.ImageId);
+            Assert.Equal(expectedImageUrl, capturedCachedModel.ImageUrl); // Verifiera även URL i cachad modell
 
+            // Verifiera Blob Upload
             _mockBlobClient.Verify(b => b.UploadAsync(
-            It.IsAny<Stream>(),
-            It.Is<BlobUploadOptions>(opts => opts.HttpHeaders.ContentType == contentType), // Verifiera att rätt ContentType sattes
-            It.IsAny<CancellationToken>()),
-            Times.Once);
+                It.IsAny<Stream>(),
+                It.Is<BlobUploadOptions>(opts => opts.HttpHeaders.ContentType == contentType),
+                It.IsAny<CancellationToken>()),
+                Times.Once);
+
+            // Verifiera att GetBlobClient anropades med det blob-namn som faktiskt användes (och som vi fångade)
+            // Detta bekräftar att 'actualBlobNameUsedByService' sattes korrekt.
+            _mockBlobContainerClient.Verify(c => c.GetBlobClient(actualBlobNameUsedByService), Times.Once);
+            // Du kan också vara mer specifik om du vill, nu när du har result.ImageId:
+            Assert.Equal($"{result.ImageId}{fileExtension}", actualBlobNameUsedByService);
         }
 
         [Fact]
