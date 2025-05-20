@@ -14,12 +14,11 @@ public interface IAzureImageService
     Task<ImageResponseModel?> UploadFileAsync(Stream fileStream, string originalName, string providedContentType);
 }
 
-public class AzureImageService(string connectionString, string containerName, ImageDbContext dbContext, ICacheHandler<ImageResponseModel> cacheHandler) : IAzureImageService
+public class AzureImageService(BlobContainerClient blobContainerClient, ImageDbContext dbContext, ICacheHandler<ImageResponseModel> cacheHandler) : IAzureImageService
 {
-    private readonly BlobContainerClient _containerClient = new(connectionString, containerName);
+    private readonly BlobContainerClient _containerClient = blobContainerClient;
     private readonly ImageDbContext _dbContext = dbContext;
     private readonly ICacheHandler<ImageResponseModel> _cache = cacheHandler;
-
 
     public async Task<ImageResponseModel?> UploadFileAsync(Stream fileStream, string originalName, string providedContentType)
     {
