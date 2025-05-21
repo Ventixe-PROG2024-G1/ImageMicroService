@@ -9,7 +9,7 @@ using ImageServiceProvider.Services.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
-namespace ImageServiceProvider.Tests
+namespace ImageServiceProvider.Test.Services
 {
     public class AzureImageServiceTests : IDisposable // Implementera IDisposable för att rensa InMemory-databasen
     {
