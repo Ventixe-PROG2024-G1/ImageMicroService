@@ -2,11 +2,8 @@
 using ImageServiceProvider.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using Microsoft.Net.Http.Headers;
-using System.Net.Mime;
 
 
 namespace ImageServiceProvider.Functions;
