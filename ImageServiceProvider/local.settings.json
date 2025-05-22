@@ -3,7 +3,7 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-    "ImageSqlConnection": "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\zob_9\\Documents\\GitHub\\Event-Booking-System\\ImageMicroService\\ImageServiceProvider\\Data\\local_ImageDB.mdf;Integrated Security=True;Connect Timeout=30",
+    "ImageSqlConnection": "Server=tcp:ventixe-events-sqlserver.database.windows.net,1433;Initial Catalog=Ventixe Events Database;Persist Security Info=False;User ID=SqlAdmin;Password=Ventixe123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
     "BlobStorage:ConnectionString": "UseDevelopmentStorage=true",
     "BlobStorage:ContainerName": "images"
   }

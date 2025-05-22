@@ -6,7 +6,7 @@ using ImageServiceProvider.Services.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Testcontainers.Azurite;
-using ImageServiceProvider.Data.Entities; // Added for ImageEntity
+using ImageServiceProvider.Data.Entities;
 
 namespace ImageServiceProvider.Test.Services;
 
@@ -52,7 +52,7 @@ public class AzureImageServiceIntegrationTest : IAsyncLifetime
     public async Task UploadFileAsync_ShouldUploadImageAndSaveMetadata()
     {
         // Arrange
-        var originalFileName = "testimage.png"; // Use a descriptive name
+        var originalFileName = "testimage.png";
         var contentType = "image/png";
         await using var memoryStream = new MemoryStream("dummy image data"u8.ToArray());
 
@@ -62,10 +62,9 @@ public class AzureImageServiceIntegrationTest : IAsyncLifetime
         // Assert
         Assert.NotNull(result);
         Assert.Equal(contentType, result.ContentType);
-        Assert.Contains(result.ImageId.ToString(), result.ImageUrl); // ImageUrl should contain the ImageId
-        Assert.EndsWith(Path.GetExtension(originalFileName), result.ImageUrl); // ImageUrl should end with the original file extension
+        Assert.Contains(result.ImageId.ToString(), result.ImageUrl);
+        Assert.EndsWith(Path.GetExtension(originalFileName), result.ImageUrl);
 
-        // Verify metadata in DB and get blobName
         var entity = await _dbContext.Images.FindAsync(result.ImageId);
         Assert.NotNull(entity);
         Assert.Equal(result.ImageId, entity.ImageId);
