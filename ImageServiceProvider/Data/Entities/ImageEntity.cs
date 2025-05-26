@@ -5,7 +5,7 @@ namespace ImageServiceProvider.Data.Entities;
 public class ImageEntity
 {
     [Key]
-    public Guid ImageId { get; set; } = Guid.NewGuid();
+    public Guid ImageId { get; set; }
 
     [Required]
     public string ImageBlobName { get; set; } = null!;
