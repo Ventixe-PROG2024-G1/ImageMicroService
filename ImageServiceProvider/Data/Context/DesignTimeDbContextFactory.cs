@@ -14,7 +14,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ImageDbCon
             .AddEnvironmentVariables()
             .Build();
 
-        var connectionString = configuration["Values:ImageSqlConnection"];
+        var connectionString = configuration["Values:SqlConnection"];
         var optionsBuilder = new DbContextOptionsBuilder<ImageDbContext>();
         optionsBuilder.UseSqlServer(connectionString);
         return new ImageDbContext(optionsBuilder.Options);

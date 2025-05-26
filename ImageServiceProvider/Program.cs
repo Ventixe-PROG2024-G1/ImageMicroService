@@ -12,7 +12,7 @@ var builder = FunctionsApplication.CreateBuilder(args);
 
 builder.ConfigureFunctionsWebApplication();
 builder.Services.AddMemoryCache();
-builder.Services.AddDbContext<ImageDbContext>(x => x.UseSqlServer(Environment.GetEnvironmentVariable("ImageSqlConnection")));
+builder.Services.AddDbContext<ImageDbContext>(x => x.UseSqlServer(Environment.GetEnvironmentVariable("SqlConnection")));
 
 builder.Services
     .AddApplicationInsightsTelemetryWorkerService()

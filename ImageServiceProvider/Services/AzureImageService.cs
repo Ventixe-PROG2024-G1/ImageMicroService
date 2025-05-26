@@ -55,39 +55,27 @@ public class AzureImageService(BlobContainerClient blobContainerClient, ImageDbC
 
         await blobClient.UploadAsync(fileStream, uploadOption);
 
-        try
+        var imageEntity = new ImageEntity
         {
-            var imageEntity = new ImageEntity
-            {
-                ImageId = imageId,
-                ImageBlobName = blobName,
-                ContentType = providedContentType
-            };
+            ImageId = imageId,
+            ImageBlobName = blobName,
+            ContentType = providedContentType
+        };
 
-            _dbContext.Images.Add(imageEntity);
-            await _dbContext.SaveChangesAsync();
+        _dbContext.Images.Add(imageEntity);
+        await _dbContext.SaveChangesAsync();
 
 
-            var model = new ImageResponseModel
-            {
-                ImageId = imageId,
-                ImageUrl = blobClient.Uri.ToString(),
-                ContentType = providedContentType
-            };
-
-            _cache.SetCache(imageId.ToString(), model);
-
-            return model;
-        }
-        catch (Exception error)
+        var model = new ImageResponseModel
         {
-            string errorMessage = $"Error uploading image: {error.Message}";
-            return new ImageResponseModel
-            {
-                ImageId = imageId,
-                ErrorMessage = errorMessage
-            };
-        }
+            ImageId = imageId,
+            ImageUrl = blobClient.Uri.ToString(),
+            ContentType = providedContentType
+        };
+
+        _cache.SetCache(imageId.ToString(), model);
+
+        return model;
     }
 
     public async Task<bool> DeleteImageAsync(Guid imageId)
