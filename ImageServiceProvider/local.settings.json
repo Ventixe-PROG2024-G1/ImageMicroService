@@ -3,7 +3,7 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-    "SqlConnection": "Server=tcp:ventixe-events-sqlserver.database.windows.net,1433;Initial Catalog=Ventixe Events Database;Persist Security Info=False;User ID=SqlAdmin;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    "SqlConnection": "Server=tcp:ventixe-events-sqlserver.database.windows.net,1433;Initial Catalog=Ventixe Events Database;Persist Security Info=False;User ID=SqlAdmin;Password=Ventixe123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
     "BlobStorage:ConnectionString": "DefaultEndpointsProtocol=https;AccountName=ventixeblobgrp1;AccountKey=aLYaPsWGMUWy4WDjoK7gHQl7jmP9HfPGGJPEtXbLZDVsdNdwUUSYZFo0gZQG6tQfro0UcidyIQmH+ASte4h/GA==;EndpointSuffix=core.windows.net",
     "BlobStorage:ContainerName": "images"
   }
