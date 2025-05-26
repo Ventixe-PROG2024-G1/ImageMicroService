@@ -14,7 +14,7 @@ public class ImageUploadFunction(ILogger<ImageUploadFunction> logger, IAzureImag
     private readonly IAzureImageService _azureImageService = azureImageService;
 
     [Function("ImageUploadFunction")]
-    public async Task<IActionResult> UploadImage([HttpTrigger(AuthorizationLevel.Function, "post", Route = "images")] HttpRequest req)
+    public async Task<IActionResult> UploadImage([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "images")] HttpRequest req)
     {
         _logger.LogInformation("Starting image upload process");
 

@@ -12,7 +12,7 @@ public class ImageDeleteFunction(ILogger<ImageDeleteFunction> logger, IAzureImag
     private readonly IAzureImageService _azureImageService = azureImageService;
 
     [Function("ImageDeleteFunction")]
-    public async Task<IActionResult> DeleteImage([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "images/{imageId:guid}")] HttpRequest req, Guid imageId)
+    public async Task<IActionResult> DeleteImage([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "images/{imageId:guid}")] HttpRequest req, Guid imageId)
     {
         _logger.LogInformation($"Starting image deletion process for image with ID: {imageId}");
 

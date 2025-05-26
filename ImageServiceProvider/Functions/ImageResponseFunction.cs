@@ -12,7 +12,7 @@ public class ImageResponseFunction(ILogger<ImageResponseFunction> logger, IAzure
     private readonly IAzureImageService _azureImageService = azureImageService;
 
     [Function("ImageResponseFunction")]
-    public async Task<IActionResult> GetImage([HttpTrigger(AuthorizationLevel.Function, "get", Route = "images/{imageId:guid}")] HttpRequest req, Guid imageId)
+    public async Task<IActionResult> GetImage([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "images/{imageId:guid}")] HttpRequest req, Guid imageId)
     {
         _logger.LogInformation($"Starting image response process for image with ID: {imageId}");
 
