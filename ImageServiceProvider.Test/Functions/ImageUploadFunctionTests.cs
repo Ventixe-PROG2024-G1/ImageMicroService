@@ -10,20 +10,20 @@ using System.Text;
 
 namespace ImageServiceProvider.Test.Functions;
 
+// Majoriteten är Genererad av AI genom Copilot unit test genom unit test feature.
 public class ImageUploadFunctionTests
 {
     private readonly Mock<IAzureImageService> _mockAzureImageService;
-    private readonly ILogger<ImageUploadFunction> _logger; // Använd ILogger, NullLogger är en implementation
+    private readonly ILogger<ImageUploadFunction> _logger;
     private readonly ImageUploadFunction _function;
 
     public ImageUploadFunctionTests()
     {
         _mockAzureImageService = new Mock<IAzureImageService>();
-        _logger = new Mock<ILogger<ImageUploadFunction>>().Object; // Eller NullLogger<ImageUploadFunction>.Instance;
+        _logger = new Mock<ILogger<ImageUploadFunction>>().Object;
         _function = new ImageUploadFunction(_logger, _mockAzureImageService.Object);
     }
 
-    // Hjälpmetod för att skapa en mockad HttpRequest med en fil
     private DefaultHttpContext CreateHttpContextWithFile(string fileName, string contentType, byte[] fileContent, bool hasFormContentType = true)
     {
         var httpContext = new DefaultHttpContext();
@@ -31,39 +31,35 @@ public class ImageUploadFunctionTests
         if (hasFormContentType)
         {
             var stream = new MemoryStream(fileContent);
-            var formFile = new FormFile(stream, 0, stream.Length, "file", fileName) // "file" är namnet funktionen förväntar sig
+            var formFile = new FormFile(stream, 0, stream.Length, "file", fileName)
             {
                 Headers = new HeaderDictionary(),
                 ContentType = contentType
             };
-            // formFile.Headers["Content-Disposition"] = $"form-data; name=\"file\"; filename=\"{fileName}\""; // Kan behövas i vissa scenarier
 
             var formFileCollection = new FormFileCollection { formFile };
             httpContext.Request.Form = new FormCollection(new Dictionary<string, StringValues>(), formFileCollection);
-            httpContext.Request.Headers["Content-Type"] = "multipart/form-data"; // Viktigt
+            httpContext.Request.Headers["Content-Type"] = "multipart/form-data";
         }
         else
         {
-            // Om inte form content type, sätt en annan för att testa den grenen
             httpContext.Request.Headers["Content-Type"] = "application/json";
         }
         return httpContext;
     }
 
-    // Hjälpmetod för att skapa en mockad HttpRequest utan fil (eller med tom fil)
     private DefaultHttpContext CreateHttpContextWithoutFile(bool hasFormContentType = true, bool fileIsEmpty = false)
     {
         var httpContext = new DefaultHttpContext();
         if (hasFormContentType)
         {
             var formFileCollection = new FormFileCollection();
-            if (!fileIsEmpty) // Om vi testar "ingen fil alls"
+            if (!fileIsEmpty)
             {
-                // Ingen fil läggs till i formFileCollection
             }
-            else // Om vi testar "tom fil"
+            else
             {
-                var stream = new MemoryStream(); // Tom stream
+                var stream = new MemoryStream();
                 var formFile = new FormFile(stream, 0, stream.Length, "file", "empty.txt")
                 {
                     Headers = new HeaderDictionary(),
@@ -111,7 +107,7 @@ public class ImageUploadFunctionTests
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
         Assert.Equal(201, createdAtActionResult.StatusCode);
         Assert.Equal(nameof(ImageResponseFunction.GetImage), createdAtActionResult.ActionName);
-        Assert.Equal("ImageResponseFunction", createdAtActionResult.ControllerName); // ControllerName är Function klassens namn
+        Assert.Equal("ImageResponseFunction", createdAtActionResult.ControllerName);
 
         var returnedValue = Assert.IsType<ImageResponseModel>(createdAtActionResult.Value);
         Assert.Equal(expectedImageId, returnedValue.ImageId);
@@ -122,7 +118,7 @@ public class ImageUploadFunctionTests
         Assert.Equal(expectedImageId, createdAtActionResult.RouteValues["imageId"]);
 
         _mockAzureImageService.Verify(s => s.UploadFileAsync(
-            It.Is<Stream>(st => st.Length == fileContent.Length), // Verifiera att streamen har rätt längd
+            It.Is<Stream>(st => st.Length == fileContent.Length),
             fileName,
             contentType), Times.Once);
     }
@@ -139,7 +135,7 @@ public class ImageUploadFunctionTests
 
         _mockAzureImageService
             .Setup(s => s.UploadFileAsync(It.IsAny<Stream>(), fileName, contentType))
-            .ReturnsAsync((ImageResponseModel?)null); // Servicen returnerar null
+            .ReturnsAsync((ImageResponseModel?)null);
 
         // Act
         var result = await _function.UploadImage(request);
@@ -170,7 +166,7 @@ public class ImageUploadFunctionTests
     public async Task UploadImage_NoFileInForm_ReturnsBadRequestObjectResult()
     {
         // Arrange
-        var httpContext = CreateHttpContextWithoutFile(fileIsEmpty: false); // hasFormContentType är true by default, men ingen fil
+        var httpContext = CreateHttpContextWithoutFile(fileIsEmpty: false);
         var request = httpContext.Request;
 
         // Act
@@ -186,7 +182,7 @@ public class ImageUploadFunctionTests
     public async Task UploadImage_EmptyFileInForm_ReturnsBadRequestObjectResult()
     {
         // Arrange
-        var httpContext = CreateHttpContextWithoutFile(fileIsEmpty: true); // hasFormContentType är true by default, men filen är tom
+        var httpContext = CreateHttpContextWithoutFile(fileIsEmpty: true);
         var request = httpContext.Request;
 
 
@@ -195,7 +191,7 @@ public class ImageUploadFunctionTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("No file uploaded or file is empty", badRequestResult.Value); // Din funktion kollar formFile.Length == 0
+        Assert.Equal("No file uploaded or file is empty", badRequestResult.Value);
         _mockAzureImageService.Verify(s => s.UploadFileAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 }

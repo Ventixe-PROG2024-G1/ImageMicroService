@@ -6,10 +6,11 @@ using ImageServiceProvider.Services.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Testcontainers.Azurite;
-using ImageServiceProvider.Data.Entities;
 
 namespace ImageServiceProvider.Test.Services;
 
+
+// Majoriteten är Genererad av AI genom Copilot unit test genom unit test feature.
 public class AzureImageServiceIntegrationTest : IAsyncLifetime
 {
     private readonly AzuriteContainer _azuriteContainer = new AzuriteBuilder()
@@ -71,14 +72,11 @@ public class AzureImageServiceIntegrationTest : IAsyncLifetime
         Assert.Equal(contentType, entity.ContentType);
         Assert.Equal($"{result.ImageId}{Path.GetExtension(originalFileName)}", entity.ImageBlobName);
 
-        // Verify blob exists
         var blobClient = _blobContainerClient.GetBlobClient(entity.ImageBlobName);
         Assert.True(await blobClient.ExistsAsync());
         var properties = await blobClient.GetPropertiesAsync();
         Assert.Equal(contentType, properties.Value.ContentType);
 
-
-        // Verify cache was set
         _mockCacheHandler.Verify(c => c.SetCache(result.ImageId.ToString(), It.Is<ImageResponseModel>(m => m.ImageId == result.ImageId), It.IsAny<int>()), Times.Once);
     }
 
@@ -130,7 +128,6 @@ public class AzureImageServiceIntegrationTest : IAsyncLifetime
         var uploadedImage = await _azureImageService.UploadFileAsync(memoryStream, originalFileName, contentType);
         Assert.NotNull(uploadedImage);
 
-        // Retrieve entity to get ImageBlobName before deletion
         var entityBeforeDelete = await _dbContext.Images.FindAsync(uploadedImage.ImageId);
         Assert.NotNull(entityBeforeDelete);
         var blobName = entityBeforeDelete.ImageBlobName;
@@ -141,11 +138,9 @@ public class AzureImageServiceIntegrationTest : IAsyncLifetime
         // Assert
         Assert.True(deleteResult);
 
-        // Verify blob is deleted
         var blobClient = _blobContainerClient.GetBlobClient(blobName);
         Assert.False(await blobClient.ExistsAsync());
 
-        // Verify metadata is removed from DB
         var entityAfterDelete = await _dbContext.Images.FindAsync(uploadedImage.ImageId);
         Assert.Null(entityAfterDelete);
 
@@ -191,7 +186,6 @@ public class AzureImageServiceIntegrationTest : IAsyncLifetime
 
 
         // Act & Assert for empty content type
-        // Ensure a new Guid for ImageId by calling UploadFileAsync again for a distinct entity
         var resultEmpty = await _azureImageService.UploadFileAsync(memoryStreamEmpty, originalFileNameSvg, providedContentTypeEmpty);
         Assert.NotNull(resultEmpty);
         Assert.Equal(expectedContentTypeSvg, resultEmpty.ContentType);
@@ -200,8 +194,6 @@ public class AzureImageServiceIntegrationTest : IAsyncLifetime
         var blobClientEmpty = _blobContainerClient.GetBlobClient(entityEmpty.ImageBlobName);
         var propertiesEmpty = await blobClientEmpty.GetPropertiesAsync();
         Assert.Equal(expectedContentTypeSvg, propertiesEmpty.Value.ContentType);
-        // Times.Exactly(2) if you want to count across both uploads in this test method, or reset mock / use separate tests.
-        // For simplicity, assuming SetCache is called for this specific upload.
         _mockCacheHandler.Verify(c => c.SetCache(resultEmpty.ImageId.ToString(), It.IsAny<ImageResponseModel>(), It.IsAny<int>()), Times.Once);
     }
 }
