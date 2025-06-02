@@ -37,8 +37,6 @@ This service performs the following key operations:
 
 ##  Features (User-Facing Perspective)
 
-*(You could keep your original "Features" list here, or rename it to something like "Service Capabilities" if you want to distinguish, but the above "Core Functionality" directly addresses your request)*
-
 *   **Image Upload:** Secure upload of images to Azure Blob Storage with metadata tracking.
 *   **Image Retrieval:** Fast image access via unique identifiers with caching support.
 *   **Image Deletion:** Complete removal of images from storage and database.
