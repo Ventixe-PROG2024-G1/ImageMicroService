@@ -1,5 +1,11 @@
 # Image Service Provider
 
+## Uploading Image Sequence Diagram
+
+![BLF1RJ~1](https://github.com/user-attachments/assets/eea97ddd-e368-4515-b62d-a566c5ef2d9b)
+
+---
+
 A robust Azure Functions-based service built to manage images with efficient storage, retrieval, and caching.
 
 ##  Core Functionality
@@ -150,7 +156,3 @@ This project relies on several key libraries and frameworks:
 *   Microsoft.Extensions.Caching.Memory
 *   Moq (for unit testing)
 *   Testcontainers.Azurite (for integration testing)
-
-## Uploading Image Sequence Diagram
-
-![BLF1RJ~1](https://github.com/user-attachments/assets/eea97ddd-e368-4515-b62d-a566c5ef2d9b)
