@@ -2,7 +2,7 @@
 
 A robust Azure Functions-based service for managing images with efficient storage, retrieval, and caching capabilities.
 
-## ✨ Features
+##  Features
 
 *   **Image Upload:** Secure upload of images to Azure Blob Storage with metadata tracking.
 *   **Image Retrieval:** Fast image access via unique identifiers with caching support.
@@ -11,7 +11,7 @@ A robust Azure Functions-based service for managing images with efficient storag
 *   **Content Type Detection:** Automatic handling of content types, including proper SVG content type resolution.
 *   **Performance Optimized:** In-memory caching for frequently accessed images.
 
-## 🛠️ Technical Stack
+##  Technical Stack
 
 *   **Backend:** .NET 9.0 with C# 13.0
 *   **Architecture:** Azure Functions v4 (isolated process model)
@@ -21,7 +21,7 @@ A robust Azure Functions-based service for managing images with efficient storag
 *   **Caching:** In-memory caching system with configurable expiration
 *   **API:** RESTful endpoints with OpenAPI support
 
-## 🔌 API Endpoints
+##  API Endpoints
 
 The following endpoints are available:
 
@@ -37,7 +37,7 @@ The following endpoints are available:
 
 *(Note: The `/api/` prefix is common for Azure Functions but adjust if your routing is different.)*
 
-## 🚀 Getting Started
+##  Getting Started
 
 To run this project locally, follow these steps:
 
@@ -95,7 +95,7 @@ To run this project locally, follow these steps:
         func start
         ```
 
-## ✅ Testing
+##  Testing
 
 The service includes comprehensive testing strategies:
 
@@ -110,7 +110,7 @@ To run the tests:
     dotnet test
     ```
 
-## 🧩 Key Dependencies
+##  Key Dependencies
 
 This project relies on several key libraries and frameworks:
 
