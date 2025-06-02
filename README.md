@@ -1,8 +1,37 @@
 # Image Service Provider
 
-A robust Azure Functions-based service for managing images with efficient storage, retrieval, and caching capabilities.
+A robust Azure Functions-based service built to manage images with efficient storage, retrieval, and caching.
 
-##  Features
+## 🎯 Core Functionality
+
+This service performs the following key operations:
+
+*   **Image Ingestion and Storage:**
+    *   Accepts image data submitted via its API.
+    *   Securely persists the binary image files to Azure Blob Storage.
+    *   Extracts or receives metadata (e.g., filename, content type, dimensions if applicable) and records this information in a SQL Server database, linking it to the stored blob.
+
+*   **Image Serving and Delivery:**
+    *   Responds to requests for specific images based on their unique identifiers.
+    *   Checks an internal in-memory cache for frequently accessed images to provide rapid delivery.
+    *   If an image is not cached, it retrieves the binary data from Azure Blob Storage.
+    *   Ensures the correct HTTP `Content-Type` header is set for the delivered image, with specific handling to accurately serve `image/svg+xml` for SVG files.
+    *   Optionally populates the in-memory cache with newly retrieved images to optimize subsequent requests.
+
+*   **Data Management and Cleanup:**
+    *   Executes deletion operations when requested for a specific image.
+    *   Removes the corresponding image file from Azure Blob Storage.
+    *   Deletes the associated metadata record from the SQL Server database, ensuring data consistency.
+
+*   **Format Processing and Content Negotiation:**
+    *   Internally identifies and processes various common image formats.
+    *   Applies specialized logic for SVG files to guarantee they are handled and identified with the precise `image/svg+xml` content type throughout their lifecycle within the service.
+
+---
+
+##  Features (User-Facing Perspective)
+
+*(You could keep your original "Features" list here, or rename it to something like "Service Capabilities" if you want to distinguish, but the above "Core Functionality" directly addresses your request)*
 
 *   **Image Upload:** Secure upload of images to Azure Blob Storage with metadata tracking.
 *   **Image Retrieval:** Fast image access via unique identifiers with caching support.
