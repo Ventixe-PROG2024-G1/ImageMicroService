@@ -2,7 +2,7 @@
 
 A robust Azure Functions-based service built to manage images with efficient storage, retrieval, and caching.
 
-## 🎯 Core Functionality
+##  Core Functionality
 
 This service performs the following key operations:
 
